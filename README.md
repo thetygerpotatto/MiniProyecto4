@@ -1,5 +1,5 @@
 # MiniProyecto4
-##Desarrollo del miniproyecto numero 4 de la clase de programación orientada a eventos.
+## Desarrollo del miniproyecto numero 4 de la clase de programación orientada a eventos.
 ## Desarrolladores:
 
 > Jaime Andres Noreña - 2359523
