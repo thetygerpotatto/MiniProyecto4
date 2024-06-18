@@ -1,2 +1,2 @@
 cd bin
-java promedios.Promedios
+java Promedios.Prom

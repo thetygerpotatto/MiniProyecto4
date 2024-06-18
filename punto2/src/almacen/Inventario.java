@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Inventario
-    {
+    {   
         private HashMap<String, Integer> inventario;
         
         private Inventario(){
