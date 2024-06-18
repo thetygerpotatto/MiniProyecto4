@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -29,12 +30,6 @@ public class Promedios extends JFrame implements ActionListener
     //?Clase promedios, aqui se crea la ventana________________
     public Promedios() 
     {
-        setVisible(true); 
-        setSize(600,450);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Sistema de Promedios");
-        
-        
         container = getContentPane();
         gradeInput = new JTextField();
         gradeInput.setColumns(20);
@@ -42,6 +37,7 @@ public class Promedios extends JFrame implements ActionListener
         nameInput.setColumns(20);
         submmit = new JButton("Añadir estudiante");
         data = new HashMap<>();
+        setLayout(new FlowLayout());
         
         submmit.addActionListener(this);
 
@@ -49,6 +45,10 @@ public class Promedios extends JFrame implements ActionListener
         container.add(gradeInput);
         container.add(submmit);
         
+        setVisible(true);
+        setSize(600,450);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Sistema de Promedios");
     }
 
     
