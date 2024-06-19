@@ -34,7 +34,7 @@ public class Promedios extends JFrame implements ActionListener
     JTextField gradeInput;
     JTextField nameInput;
     JButton submmit;
-    JLabel info;
+    JTextField info;
     JScrollPane ScrollList;
     JTable studentList;
     StudentTable tableModel;
@@ -69,7 +69,9 @@ public class Promedios extends JFrame implements ActionListener
         studentList = new JTable(tableModel);
         ScrollList = new JScrollPane(studentList);
         
-        info = new JLabel("", JLabel.CENTER);
+        info = new JTextField("", JLabel.CENTER);
+        info.setEditable(false);
+        
 
         
         submmit.addActionListener(this);
@@ -148,7 +150,7 @@ public class Promedios extends JFrame implements ActionListener
     }
 
     private void showAboveAverageStudents() {
-        String showingText = "Estudiantes por encima de promedio: ";
+        String showingText = "Estudiantes por encima de promedio(" + averageGrade + "): ";
         Iterator<Map.Entry<String, Float>> pair = data.entrySet().iterator();
         boolean enter = false;
         while (pair.hasNext()) {
