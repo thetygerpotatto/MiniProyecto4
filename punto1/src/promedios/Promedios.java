@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -41,8 +42,8 @@ public class Promedios extends JFrame implements ActionListener
     String[][] studentInfo = {{"", ""}};
     String[] columnNames = {"Nombre", "Nota"};
 
-    int studentInfoArraySize = 0;
-    
+    Float averageGrade;
+
     Map<String, Float> data;//<-------
 
     //?Clase promedios, aqui se crea la ventana________________
@@ -111,8 +112,9 @@ public class Promedios extends JFrame implements ActionListener
         }
 
         data.put(name, grade);
-        System.out.println(data.size());
         updateStudentTable();
+        updateAverage();
+        showAboveAverageStudents();
     }
 
     private void updateStudentTable() {
@@ -125,10 +127,43 @@ public class Promedios extends JFrame implements ActionListener
             studentInfo[i][1] = "" + data.get(name);
             ++i;
         }
-        System.out.println("i=" + i);
-      
         tableModel.changeData(studentInfo, data.size());
         tableModel.fireTableStructureChanged();
 
-    } 
+    }
+
+    private void updateAverage() {
+        if (data.size() == 0) {
+            info.setText("");
+            return;
+        }
+        float acum = 0;
+        Iterator<Float> grades = data.values().iterator();
+        while(grades.hasNext()) {
+            acum += grades.next();
+        }
+
+        averageGrade = acum / (float)data.size();
+
+    }
+
+    private void showAboveAverageStudents() {
+        String showingText = "Estudiantes por encima de promedio: ";
+        Iterator<Map.Entry<String, Float>> pair = data.entrySet().iterator();
+        boolean enter = false;
+        while (pair.hasNext()) {
+            Map.Entry<String, Float> currentPair = pair.next();
+            String name = currentPair.getKey();
+            float grade  = currentPair.getValue();
+            if (grade > averageGrade) {
+                showingText += name +", ";
+                enter = true;
+            }
+        }
+        showingText =  showingText.substring(0, showingText.length()-2);
+
+
+        if (enter) info.setText(showingText);
+        else info.setText("No hay estudiantes por encima del promedio");
+    }
 }

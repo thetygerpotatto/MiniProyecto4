@@ -28,7 +28,6 @@ public class StudentTable extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        System.out.println(Size);
         return Size;
     }
 
