@@ -49,6 +49,7 @@ public class Promedios extends JFrame implements ActionListener
     //?Clase promedios, aqui se crea la ventana________________
     public Promedios() 
     {
+
         setLayout(new BorderLayout());
 
         container = getContentPane();
