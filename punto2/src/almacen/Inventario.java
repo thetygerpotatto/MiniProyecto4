@@ -23,52 +23,202 @@ en un archivo de texto
 */ 
 
 
+import java.io.BufferedReader;
 // El arreglo donde se guarden los productos
 // La interfaz por medio de consola, que permita agregar o quitar 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+import javax.naming.NameNotFoundException;
+import javax.xml.validation.Validator;
+
+import java.util.Iterator;
 
 public class Inventario
-
-    {
-        private HashMap<String, Integer> inventario;
-        
-        private Inventario(){
-            this.inventario = new HashMap<>();
-        }
-
-        //?Funcion para agregar un nuevo producto o actualizar la cantidad de un producto existente
-        public void agregarProducto(String codigo, int cantidad)
-        {
-            inventario.put(codigo,inventario.getOrDefault(codigo, 0) + cantidad);
-        }
-
-        //?Eliminar un producto del inventario
-        public void eliminarProducto(String codigo){
-            inventario.remove(codigo);
-        }
-
-        //?Obtener la cantidad de un producto
-        public int obtenerCantidad(String codigo)
-        {
-            return inventario.getOrDefault(codigo, 0);
-        }
-
-        //?Guardad el inventario en un archivo de text
-        public void guardarInventario(String archivo)
-        {
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter(archivo)))
-            {
-                for (Map.Entry<String, Integer> entrada : inventario.entrySet()) {
-                    writer.write(entrada.getKey() + ": " + entrada.getValue());
-                    writer.newLine();
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+{   
+    private HashMap<String, Articulo> inventario;
+    private Scanner scanner = new Scanner(System.in);
+    private File file_direction = new File("punto2/files/inventory.csv");
+    
+    public Inventario(){
+        this.inventario = new HashMap<>();
+        leerAriticulosDeMemoria();
+        menu();
     }
 
+
+    public void menu() {
+        int opcion = -1;
+        boolean loop = true;
+        while (loop) {
+            System.out.println("\033[H\033[2J" + "Sistema de Inventario SAS");
+            System.out.println("1 - para añadir un articulo");
+            System.out.println("2 - para buscar un ariticulo por codigo");
+            System.out.println("3 - para eliminar articulo");
+            System.out.println("4 - para listar articulos");
+            System.out.println("5 - guardar cambios");
+            System.out.println("0 - para salir");
+            try {
+                opcion = scanner.nextInt();
+            } catch (NumberFormatException e) {
+                System.out.println("ERROR: ingrese solo numeros enteros");
+                scanner.next();
+                continue;
+            }
+
+            switch (opcion) {
+                case 1:
+                    newProduct();
+                    break;
+                case 2:
+                    busqueda(productCode());
+                    break;
+                case 3:
+                    eliminarProducto(productCode());
+                    break;
+                case 4:
+                    listarArticulos();
+                    break;
+                case 5:
+                    guardarInventario();
+                    break;
+                case 0:
+                    guardarInventario();
+                    loop = false;
+                    break;
+            }
+        }
+        scanner.close();
+    }
+
+    public String productCode()
+    {
+        int code = 0;
+        
+            
+        try {
+            System.out.println("por favor ingresa un codigo de producto valido");
+            code = scanner.nextInt();
+            
+        } catch (InputMismatchException e){
+            System.out.println("ERROR: ingrese solo numeros enteros");
+            code = scanner.nextInt();
+        }
+
+        return Integer.toString(code);
+    
+    }
+    public void listarArticulos() {
+        System.out.println("Listado de articulos: ");
+        for (Articulo art : inventario.values() ) {
+           System.out.println("- articulo: " + art.getNombre() + "\n"
+                                + "  codigo: " + art.getCodigo() +"\n"
+                                + "  cantidad: " + art.getCantidad() + "\n"); 
+        }
+        scanner.next();
+    }
+
+    //?Funcion para agregar un nuevo producto o actualizar la cantidad de un producto existente
+    public void agregarProducto(String codigo, int cantidad, String nombre)
+    {
+        inventario.put(codigo, new Articulo(codigo, cantidad, nombre));
+    }
+    public void newProduct()
+    {
+        String codigo = productCode();
+        System.out.println("Ingresa el nombre e producto");
+        String nombre = scanner.next();
+        scanner.next();
+        System.out.println("Cantidad de productos que ingresa  ");
+        int cantidad = scanner.nextInt();
+        agregarProducto(codigo, cantidad, nombre);
+    }
+    //?Eliminar un producto del inventario
+    public void eliminarProducto(String codigo){
+        inventario.remove(codigo);
+    }
+
+    //?Obtener la cantidad de un producto
+    public int obtenerCantidad(String codigo)
+    {
+        return inventario.get(codigo).getCantidad();
+    }
+
+    public void busqueda(String codigo)
+    {
+        String found = "";
+        if (inventario.containsKey(codigo) ) {
+            found = inventario.get(codigo).getCodigo()+": \nNombre de producto : "+inventario.get(codigo).getNombre()+", \nCantidad en stock : "+inventario.get(codigo).getCantidad();
+        }else{
+            found = "El articulo solicitado no se encuentra en el inventario de la tienda";
+        }
+        System.out.println(found);
+        scanner.next();
+        
+    }
+
+    //?Guardad el inventario en un archivo de text
+    public void guardarInventario()
+    {
+        FileWriter file_writer;
+        try {
+            file_writer = new FileWriter(file_direction);   
+            BufferedWriter buff_write = new BufferedWriter(file_writer);
+            Iterator<Articulo> art =inventario.values().iterator();
+            while (art.hasNext()) {
+                Articulo articulo_actual = art.next();
+                String line = articulo_actual.getCodigo() + "," 
+                            + articulo_actual.getCantidad() + "," 
+                            + articulo_actual.getNombre() + "\n";
+                buff_write.write(line);
+            }
+            buff_write.close();
+            file_writer.close();
+        } catch (FileNotFoundException e){
+            System.out.println(e.getMessage());
+            return;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+    }
+
+    private void leerAriticulosDeMemoria() {
+        FileReader file_reader;
+        try {
+            file_reader = new FileReader(file_direction);
+            BufferedReader buff_reader = new BufferedReader(file_reader);
+            String line = buff_reader.readLine();
+            while (line != null) {
+                //System.out.println(line);
+                StringTokenizer values = new StringTokenizer(line, ",");
+                while (values.hasMoreTokens()) {
+                    String codigo = values.nextToken();
+                    int cantidad = Integer.parseInt(values.nextToken());
+                    String nombre = values.nextToken();
+                    inventario.put(codigo, new Articulo(codigo, cantidad, nombre));
+                }
+                line = buff_reader.readLine();
+            }
+            buff_reader.close();
+            file_reader.close();
+        } catch(FileNotFoundException e) {
+            System.out.println(e.getMessage());
+            return;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+    }
 }
