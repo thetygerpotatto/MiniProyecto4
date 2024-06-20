@@ -45,7 +45,7 @@ public class Inventario
 {   
     private HashMap<String, Articulo> inventario;
     private Scanner scanner = new Scanner(System.in);
-    private File file_direction = new File("../files/inventory.csv");
+    private File file_direction = new File("punto2/files/inventory.csv");
     
     public Inventario(){
         this.inventario = new HashMap<>();
