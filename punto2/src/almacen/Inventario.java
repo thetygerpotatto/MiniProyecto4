@@ -23,51 +23,115 @@ en un archivo de texto
 */ 
 
 
+import java.io.BufferedReader;
 // El arreglo donde se guarden los productos
 // La interfaz por medio de consola, que permita agregar o quitar 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+
+import javax.xml.validation.Validator;
+
+import java.util.Iterator;
 
 public class Inventario
-    {   
-        private HashMap<String, Integer> inventario;
-        
-        private Inventario(){
-            this.inventario = new HashMap<>();
-        }
+{   
+    private HashMap<String, Articulo> inventario;
+    private File file_direction = new File("../files/inventory.csv");
+    
+    public Inventario(){
+        this.inventario = new HashMap<>();
+        leerAriticulosDeMemoria();
+    }
 
-        //?Funcion para agregar un nuevo producto o actualizar la cantidad de un producto existente
-        public void agregarProducto(String codigo, int cantidad)
-        {
-            inventario.put(codigo,inventario.getOrDefault(codigo, 0) + cantidad);
-        }
-
-        //?Eliminar un producto del inventario
-        public void eliminarProducto(String codigo){
-            inventario.remove(codigo);
-        }
-
-        //?Obtener la cantidad de un producto
-        public int obtenerCantidad(String codigo)
-        {
-            return inventario.getOrDefault(codigo, 0);
-        }
-
-        //?Guardad el inventario en un archivo de text
-        public void guardarInventario(String archivo)
-        {
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter(archivo)))
-            {
-                for (Map.Entry<String, Integer> entrada : inventario.entrySet()) {
-                    writer.write(entrada.getKey() + ": " + entrada.getValue());
-                    writer.newLine();
-            }
-        }catch (IOException e){
-            e.printStackTrace();
+    public void menu() {
+        while (true) {
+            System.out.println("Sistsma de Inventario SAS");
+            System.out.println("1 - para añadir un articulo");
+            System.out.println("2 - para buscar un ariticulo por codigo");
+            System.out.println("3 - para listar articulos");
         }
     }
 
+    public void listarArticulos() {
+        
+    }
+
+    //?Funcion para agregar un nuevo producto o actualizar la cantidad de un producto existente
+    public void agregarProducto(String codigo, int cantidad, String nombre)
+    {
+        inventario.put(codigo, new Articulo(codigo, cantidad, nombre));
+    }
+
+    //?Eliminar un producto del inventario
+    public void eliminarProducto(String codigo){
+        inventario.remove(codigo);
+    }
+
+    //?Obtener la cantidad de un producto
+    public int obtenerCantidad(String codigo)
+    {
+        return inventario.get(codigo).getCantidad();
+    }
+
+    //?Guardad el inventario en un archivo de text
+    public void guardarInventario(String archivo)
+    {
+        FileWriter file_writer;
+        try {
+            file_writer = new FileWriter(file_direction);   
+            BufferedWriter buff_write = new BufferedWriter(file_writer);
+            Iterator<Articulo> art =inventario.values().iterator();
+            while (art.hasNext()) {
+                Articulo articulo_actual = art.next();
+                String line = articulo_actual.getCodigo() + "," 
+                            + articulo_actual.getCantidad() + "," 
+                            + articulo_actual.getName() + "\n";
+                buff_write.write(line);
+            }
+            buff_write.close();
+            file_writer.close();
+        } catch (FileNotFoundException e){
+            System.out.println(e.getMessage());
+            return;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+    }
+
+    private void leerAriticulosDeMemoria() {
+        FileReader file_reader;
+        try {
+            file_reader = new FileReader(file_direction);
+            BufferedReader buff_reader = new BufferedReader(file_reader);
+            String line = buff_reader.readLine();
+            while (line != null) {
+                line = buff_reader.readLine();
+                StringTokenizer values = new StringTokenizer(line, ",");
+                while (values.hasMoreTokens()) {
+                    String codigo = values.nextToken();
+                    int cantidad = Integer.parseInt(values.nextToken());
+                    String nombre = values.nextToken();
+                    inventario.put(codigo, new Articulo(codigo, cantidad, nombre));
+                }
+            }
+            buff_reader.close();
+            file_reader.close();
+        } catch(FileNotFoundException e) {
+            System.out.println(e.getMessage());
+            return;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+    }
 }
