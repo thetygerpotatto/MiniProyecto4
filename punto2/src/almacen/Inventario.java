@@ -33,10 +33,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import javax.naming.NameNotFoundException;
 import javax.xml.validation.Validator;
 
 import java.util.Iterator;
@@ -61,7 +63,9 @@ public class Inventario
             System.out.println("\033[H\033[2J" + "Sistema de Inventario SAS");
             System.out.println("1 - para añadir un articulo");
             System.out.println("2 - para buscar un ariticulo por codigo");
-            System.out.println("3 - para listar articulos");
+            System.out.println("3 - para eliminar articulo");
+            System.out.println("4 - para listar articulos");
+            System.out.println("5 - guardar cambios");
             System.out.println("0 - para salir");
             try {
                 opcion = scanner.nextInt();
@@ -73,14 +77,19 @@ public class Inventario
 
             switch (opcion) {
                 case 1:
-
+                    newProduct();
                     break;
                 case 2:
+                    busqueda(productCode());
                     break;
                 case 3:
-                    listarArticulos();
+                    eliminarProducto(productCode());
                     break;
                 case 4:
+                    listarArticulos();
+                    break;
+                case 5:
+                    guardarInventario();
                     break;
                 case 0:
                     guardarInventario();
@@ -91,6 +100,23 @@ public class Inventario
         scanner.close();
     }
 
+    public String productCode()
+    {
+        int code = 0;
+        
+            
+        try {
+            System.out.println("por favor ingresa un codigo de producto valido");
+            code = scanner.nextInt();
+            
+        } catch (InputMismatchException e){
+            System.out.println("ERROR: ingrese solo numeros enteros");
+            code = scanner.nextInt();
+        }
+
+        return Integer.toString(code);
+    
+    }
     public void listarArticulos() {
         System.out.println("Listado de articulos: ");
         for (Articulo art : inventario.values() ) {
@@ -106,7 +132,16 @@ public class Inventario
     {
         inventario.put(codigo, new Articulo(codigo, cantidad, nombre));
     }
-
+    public void newProduct()
+    {
+        String codigo = productCode();
+        System.out.println("Ingresa el nombre e producto");
+        String nombre = scanner.next();
+        scanner.next();
+        System.out.println("Cantidad de productos que ingresa  ");
+        int cantidad = scanner.nextInt();
+        agregarProducto(codigo, cantidad, nombre);
+    }
     //?Eliminar un producto del inventario
     public void eliminarProducto(String codigo){
         inventario.remove(codigo);
@@ -116,6 +151,19 @@ public class Inventario
     public int obtenerCantidad(String codigo)
     {
         return inventario.get(codigo).getCantidad();
+    }
+
+    public void busqueda(String codigo)
+    {
+        String found = "";
+        if (inventario.containsKey(codigo) ) {
+            found = inventario.get(codigo).getCodigo()+": \nNombre de producto : "+inventario.get(codigo).getNombre()+", \nCantidad en stock : "+inventario.get(codigo).getCantidad();
+        }else{
+            found = "El articulo solicitado no se encuentra en el inventario de la tienda";
+        }
+        System.out.println(found);
+        scanner.next();
+        
     }
 
     //?Guardad el inventario en un archivo de text
