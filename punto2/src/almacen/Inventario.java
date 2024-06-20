@@ -34,6 +34,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import javax.xml.validation.Validator;
@@ -43,6 +44,7 @@ import java.util.Iterator;
 public class Inventario
 {   
     private HashMap<String, Articulo> inventario;
+    private Scanner scanner = new Scanner(System.in);
     private File file_direction = new File("../files/inventory.csv");
     
     public Inventario(){
@@ -50,17 +52,25 @@ public class Inventario
         leerAriticulosDeMemoria();
     }
 
+
     public void menu() {
         while (true) {
             System.out.println("Sistsma de Inventario SAS");
             System.out.println("1 - para añadir un articulo");
             System.out.println("2 - para buscar un ariticulo por codigo");
             System.out.println("3 - para listar articulos");
+
+            
         }
     }
 
     public void listarArticulos() {
-        
+        System.out.println("Listdado de articulos: ");
+        for (Articulo art : inventario.values() ) {
+           System.out.println("- articulo: " + art.getName() + "\n"
+                                + " codigo: " + art.getCodigo() +"\n"
+                                + " cantidad: " + art.getCantidad()); 
+        }
     }
 
     //?Funcion para agregar un nuevo producto o actualizar la cantidad de un producto existente
