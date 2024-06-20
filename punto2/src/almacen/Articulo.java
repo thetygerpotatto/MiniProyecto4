@@ -3,11 +3,11 @@ package almacen;
 public class Articulo {
     private String codigo;
     private int cantidad;
-    private String name;
+    private String nombre;
 
     public Articulo(String codigo, int cantidad, String nombre) {
         this.codigo = codigo;
-        this.name = name;
+        this.nombre = nombre;
         this.cantidad = cantidad;
     }
 
@@ -31,11 +31,11 @@ public class Articulo {
         this.cantidad = cantidad;
     }
 
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

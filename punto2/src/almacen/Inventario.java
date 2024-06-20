@@ -50,27 +50,55 @@ public class Inventario
     public Inventario(){
         this.inventario = new HashMap<>();
         leerAriticulosDeMemoria();
+        menu();
     }
 
 
     public void menu() {
-        while (true) {
-            System.out.println("Sistsma de Inventario SAS");
+        int opcion = -1;
+        boolean loop = true;
+        while (loop) {
+            System.out.println("\033[H\033[2J" + "Sistema de Inventario SAS");
             System.out.println("1 - para añadir un articulo");
             System.out.println("2 - para buscar un ariticulo por codigo");
             System.out.println("3 - para listar articulos");
+            System.out.println("0 - para salir");
+            try {
+                opcion = scanner.nextInt();
+            } catch (NumberFormatException e) {
+                System.out.println("ERROR: ingrese solo numeros enteros");
+                scanner.next();
+                continue;
+            }
 
-            
+            switch (opcion) {
+                case 1:
+
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    listarArticulos();
+                    break;
+                case 4:
+                    break;
+                case 0:
+                    guardarInventario();
+                    loop = false;
+                    break;
+            }
         }
+        scanner.close();
     }
 
     public void listarArticulos() {
-        System.out.println("Listdado de articulos: ");
+        System.out.println("Listado de articulos: ");
         for (Articulo art : inventario.values() ) {
-           System.out.println("- articulo: " + art.getName() + "\n"
-                                + " codigo: " + art.getCodigo() +"\n"
-                                + " cantidad: " + art.getCantidad()); 
+           System.out.println("- articulo: " + art.getNombre() + "\n"
+                                + "  codigo: " + art.getCodigo() +"\n"
+                                + "  cantidad: " + art.getCantidad() + "\n"); 
         }
+        scanner.next();
     }
 
     //?Funcion para agregar un nuevo producto o actualizar la cantidad de un producto existente
@@ -91,7 +119,7 @@ public class Inventario
     }
 
     //?Guardad el inventario en un archivo de text
-    public void guardarInventario(String archivo)
+    public void guardarInventario()
     {
         FileWriter file_writer;
         try {
@@ -102,7 +130,7 @@ public class Inventario
                 Articulo articulo_actual = art.next();
                 String line = articulo_actual.getCodigo() + "," 
                             + articulo_actual.getCantidad() + "," 
-                            + articulo_actual.getName() + "\n";
+                            + articulo_actual.getNombre() + "\n";
                 buff_write.write(line);
             }
             buff_write.close();
@@ -124,7 +152,7 @@ public class Inventario
             BufferedReader buff_reader = new BufferedReader(file_reader);
             String line = buff_reader.readLine();
             while (line != null) {
-                line = buff_reader.readLine();
+                //System.out.println(line);
                 StringTokenizer values = new StringTokenizer(line, ",");
                 while (values.hasMoreTokens()) {
                     String codigo = values.nextToken();
@@ -132,6 +160,7 @@ public class Inventario
                     String nombre = values.nextToken();
                     inventario.put(codigo, new Articulo(codigo, cantidad, nombre));
                 }
+                line = buff_reader.readLine();
             }
             buff_reader.close();
             file_reader.close();
