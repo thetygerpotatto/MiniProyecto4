@@ -1,24 +1,19 @@
-//?Imports____________________________________________________
 package promedios;
+//?Imports____________________________________________________
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane; //Joptionpane
 import javax.swing.JTextField;
-import javax.swing.table.TableModel;
 import javax.swing.JScrollPane;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
